@@ -13,14 +13,14 @@ import java.util.regex.Pattern;
 
 public class IniFile {
 
-//	public static void main(String[] args) throws IOException{
-//		IniFile ini = new IniFile("config.ini");
-//	}
+	public static void main(String[] args) throws IOException{
+		IniFile ini = new IniFile("config.ini");
+	}
 	
 	private Pattern _section = Pattern.compile("\\s*([^=]*)=(.*)");
 	
 	private Map<String, Map<String, String>> workerMap = new HashMap();
-	private Map<String, String> ipPortMap = new HashMap();
+	private Map<String, String> ipPortMap;
 	
 	private ArrayList<String> arrayList = new ArrayList<String>();
 	private ArrayList<String> arrayListNoWorker = new ArrayList<String>();
@@ -47,9 +47,9 @@ public class IniFile {
 			while(arrayList.size()>i){
 				String nbW  = arrayListNoWorker.get(i).replace("worker.", "").replace(".ip", "");
 								
+				ipPortMap = new HashMap();
 				ipPortMap.put("ip",arrayList.get(i));
 				ipPortMap.put("port", arrayList.get(i+1) );
-				
 				
 				workerMap.put(nbW,ipPortMap);
 				i=i+2;
