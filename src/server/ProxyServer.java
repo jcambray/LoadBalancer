@@ -25,12 +25,13 @@ public class ProxyServer {
 		{
 		init();
 		stopListening = false;
-		Map<String,String> worker = workersMap.get(String.valueOf(currentWorkerIndex));
-		int port = Integer.parseInt(worker.keySet().iterator());
-		String ip = workersMap.get(String.valueOf(currentWorkerIndex))
-				.get("ip");
+		Map<String,Map<String,String>> worker = workersMap;
+		
+		//int port = Integer.parseInt(worker.get("port"));
+		//String ip = workersMap.get(String.valueOf(currentWorkerIndex))
+				//.get("ip");
 		//proxyServer = new ServerSocket(port, 20, InetAddress.getByName(ip));
-		proxyServer = new ServerSocket(port);
+		proxyServer = new ServerSocket(4000);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -46,8 +47,8 @@ public class ProxyServer {
 		try {
 			while (!stopListening) {
 				handle(proxyServer.accept());
-				System.out.println("connected to " + proxyServer.getInetAddress() +
-						" on port " + proxyServer.getLocalPort());
+				String ip = workersMap.get(String.valueOf(currentWorkerIndex)).get("ip");
+				System.out.println("connected to " + ip + " on port " + proxyServer.getLocalPort());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,7 +64,7 @@ public class ProxyServer {
 			
 			//Connection au serveur
 			String workerIP = workersMap.get(String.valueOf(currentWorkerIndex)).get("ip");
-			String workerPort = workersMap.get(String.valueOf(currentWorkerIndex)).get("ip");
+			String workerPort = workersMap.get(String.valueOf(currentWorkerIndex)).get("port");
 			Socket serverSocket = new Socket(InetAddress.getByName(workerIP),Integer.parseInt(workerPort));
 			
 			//les flux du serveur
