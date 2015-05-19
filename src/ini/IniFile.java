@@ -48,9 +48,6 @@ public class IniFile {
 				String nbW  = arrayListNoWorker.get(i).replace("worker.", "");
 				nbW  = nbW.replace(".ip", "");
 				
-				System.out.println("ipPortMap "+arrayList.get(i)+" - "+arrayList.get(i+1));
-				System.out.println("workerMap "+nbW+" - "+ipPortMap);
-				
 				ipPortMap.put( arrayList.get(i), arrayList.get(i+1) );
 				workerMap.put(nbW,ipPortMap);
 				i=i+2;
