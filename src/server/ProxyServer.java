@@ -17,6 +17,7 @@ public class ProxyServer {
 	private ServerSocket proxyServer;
 	private int currentWorkerIndex = 0;
 	private boolean stopListening;
+	private final int serverPort = 4000;
     final byte[] request = new byte[1024];
     byte[] reply = new byte[4096];
 
@@ -26,12 +27,8 @@ public class ProxyServer {
 		init();
 		stopListening = false;
 		Map<String,Map<String,String>> worker = workersMap;
-		
-		//int port = Integer.parseInt(worker.get("port"));
-		//String ip = workersMap.get(String.valueOf(currentWorkerIndex))
-				//.get("ip");
-		//proxyServer = new ServerSocket(port, 20, InetAddress.getByName(ip));
-		proxyServer = new ServerSocket(4000);
+		proxyServer = new ServerSocket(serverPort);
+		System.out.println("Listening on port " + serverPort);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -47,8 +44,6 @@ public class ProxyServer {
 		try {
 			while (!stopListening) {
 				handle(proxyServer.accept());
-				String ip = workersMap.get(String.valueOf(currentWorkerIndex)).get("ip");
-				System.out.println("connected to " + ip + " on port " + proxyServer.getLocalPort());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,14 +53,18 @@ public class ProxyServer {
 	private void handle(Socket clientSocket) {
 		try
 		{
+			System.out.println("connected to " + clientSocket.getInetAddress().getHostName()
+					+ " on port "
+					+ clientSocket.getLocalPort());
 			//flux du client
 			final InputStream streamFromClient = clientSocket.getInputStream();
-			OutputStream streamToClient = clientSocket.getOutputStream();
+			final OutputStream streamToClient = clientSocket.getOutputStream();
 			
 			//Connection au serveur
 			String workerIP = workersMap.get(String.valueOf(currentWorkerIndex)).get("ip");
 			String workerPort = workersMap.get(String.valueOf(currentWorkerIndex)).get("port");
 			Socket serverSocket = new Socket(InetAddress.getByName(workerIP),Integer.parseInt(workerPort));
+			System.out.println("Connected to the server...");
 			
 			//les flux du serveur
 			InputStream streamFromServer = serverSocket.getInputStream();
@@ -105,6 +104,7 @@ public class ProxyServer {
 		        }
 			serverSocket.close();
 			clientSocket.close();
+			
 			//incremente le worker pour la requete suivante
 			incrementWorkerIndex();
 		}
